@@ -1,0 +1,3 @@
+sudo add-apt-repository --remove ppa:daniel-marynicz/filemanager-actions 
+
+dts challenges config --docker-username aliqk1603 --docker-password CUpHeDMIcadIsa
