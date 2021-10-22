@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[3]:
+# In[48]:
 
 
 import numpy as np
@@ -44,6 +44,11 @@ def PIDController(v_0, theta_ref, theta_hat, prev_e, prev_int, delta_t):
     e_der = (e - prev_e)/delta_t
 
     # controller coefficients
+    #Defaults
+    # Kp = 5
+    # Ki = 0.2
+    # Kd = 0.1
+    
     Kp = 5
     Ki = 0.2
     Kd = 0.1
