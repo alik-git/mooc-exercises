@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[33]:
+# In[45]:
 
 
 # The function written in this cell will actually be ran on your robot (sim or real). 
@@ -23,12 +23,13 @@ def get_steer_matrix_left_lane_markings(shape):
     # print(shape)
     # print(*shape)
     steer_matrix_left_lane = np.ones(shape)
-    steer_matrix_left_lane[:,:] = -0.001
+    steer_matrix_left_lane[:,:] = -0.003
+    steer_matrix_left_lane[:,] = np.linspace(-0.001, -0.002, shape[1])
 
     return steer_matrix_left_lane
 
 
-# In[34]:
+# In[50]:
 
 
 # The function written in this cell will actually be ran on your robot (sim or real). 
@@ -46,12 +47,13 @@ def get_steer_matrix_right_lane_markings(shape):
     """
     
     steer_matrix_right_lane = np.ones(shape)
-    steer_matrix_right_lane[:,:] = 0.001
+    steer_matrix_right_lane[:,:] = 0.002
+    steer_matrix_right_lane[:,] = np.linspace(0.0005, 0.0003, shape[1])
 
     return steer_matrix_right_lane
 
 
-# In[74]:
+# In[52]:
 
 
 # The function written in this cell will actually be ran on your robot (sim or real). 
@@ -85,14 +87,15 @@ def detect_lane_markings(image):
     
     mask_ground = np.ones(image.shape, dtype=np.uint8) # TODO: CHANGE ME
     h_mask_ratio = 3
-    print("hello")
-    print(mask_ground.shape)
+    # print("hello")
+    # print(mask_ground.shape)
     mask_ground[:int(image.shape[0]/h_mask_ratio),:] = 0
-    mask_ground[:int(image.shape[0]/h_mask_ratio),:] = np.zeros((int(image.shape[0]/h_mask_ratio), int(image.shape[1])), dtype=uint8)
-    mask_ground[:int(image.shape/h_mask_ratio),:] = np.zeros((int(image.shape/h_mask_ratio), int(image.shape[1])), dtype=uint8)
+    # runnning the line below gives error 
+    # mask_ground[:int(image.shape[0]/h_mask_ratio),:] = np.zeros((int(image.shape[0]/h_mask_ratio), int(image.shape[1])), dtype=uint8)
+    # mask_ground[:int(image.shape/h_mask_ratio),:] = np.zeros((int(image.shape/h_mask_ratio), int(image.shape[1])), dtype=uint8)
 
     
-    sigma = 2
+    sigma = 3
     img_gaussian_filter = cv2.GaussianBlur(image,(0,0), sigma)
     sobelx = cv2.Sobel(img_gaussian_filter,cv2.CV_64F,1,0)
     sobely = cv2.Sobel(img_gaussian_filter,cv2.CV_64F,0,1)
@@ -102,32 +105,33 @@ def detect_lane_markings(image):
     mask_mag = (Gmag > threshold)
     
     
-    white_lower_hsv = np.array([0, 0,150])         # CHANGE ME
-    white_upper_hsv = np.array([179, 40, 255])   # CHANGE ME
-    yellow_lower_hsv = np.array([15, 80, 170])        # CHANGE ME
-    yellow_upper_hsv = np.array([40, 255, 255])  # CHANGE ME
+    white_lower_hsv = np.array([0, 0,120])         # CHANGE ME
+    white_upper_hsv = np.array([179, 90, 255])   # CHANGE ME
+    yellow_lower_hsv = np.array([10, 30, 80])        # CHANGE ME
+    yellow_upper_hsv = np.array([50, 255, 255])  # CHANGE ME
 
     mask_white = cv2.inRange(imghsv, white_lower_hsv, white_upper_hsv)
     mask_yellow = cv2.inRange(imghsv, yellow_lower_hsv, yellow_upper_hsv)
     
     width = img.shape[1]
+    vm_ratio = 2
     mask_left = np.ones(sobelx.shape)
-    mask_left[:,int(np.floor(width/2)):width + 1] = 0
+    mask_left[:,int(np.floor(width - (width/vm_ratio))):width + 1] = 0
     mask_right = np.ones(sobelx.shape)
-    mask_right[:,0:int(np.floor(width/2))] = 0
+    mask_right[:,0:int(np.floor(width/vm_ratio))] = 0
     mask_sobelx_pos = (sobelx > 0)
     mask_sobelx_neg = (sobelx < 0)
     mask_sobely_pos = (sobely > 0)
     mask_sobely_neg = (sobely < 0)
     # mask_ground = np.array([mask_ground, mask_ground, mask_ground])
     # print(mask_ground.shape)
-    print(mask_left.shape)
-    print(mask_mag.shape)
-    print(mask_sobelx_neg.shape)
-    print(mask_sobely_neg.shape)
+    # print(mask_left.shape)
+    # print(mask_mag.shape)
+    # print(mask_sobelx_neg.shape)
+    # print(mask_sobely_neg.shape)
     
     a = np.array([[1, 2], [1, 2]])
-    print(a.shape)
+    # print(a.shape)
     # (2,  2)
 
     # indexing with np.newaxis inserts a new 3rd dimension, which we then repeat the
@@ -135,10 +139,32 @@ def detect_lane_markings(image):
     mask_yellow_3 = np.repeat(mask_yellow[:, :, np.newaxis], 3, axis=2)
     mask_white_3 = np.repeat(mask_white[:, :, np.newaxis], 3, axis=2)
 
+#     mask_left_edge = mask_ground * mask_left * mask_mag * mask_sobelx_neg * mask_sobely_neg * mask_yellow
+#     mask_right_edge = mask_ground * mask_right * mask_mag * mask_sobelx_pos * mask_sobely_neg * mask_white
     
-    mask_left_edge = mask_ground * mask_left * mask_mag * mask_sobelx_neg * mask_sobely_neg * mask_yellow_3
-    mask_right_edge = mask_ground * mask_right * mask_mag * mask_sobelx_pos * mask_sobely_neg * mask_white_3
+#     mask_left_edge =  mask_left * mask_mag * mask_sobelx_neg * mask_sobely_neg * (mask_yellow_3 * 10)
+#     mask_right_edge = mask_right * mask_mag * mask_sobelx_pos * mask_sobely_neg * mask_white_3
     
+    # basic
+    mask_left_edge =  (mask_left * mask_mag)
+    mask_right_edge = (mask_right * mask_mag)
+    
+    # edge via gradient
+    mask_left_edge *= (mask_sobelx_neg * mask_sobely_neg)
+    mask_right_edge *= (mask_sobelx_pos * mask_sobely_neg)
+    
+    # mask_left_edge += (mask_sobely_neg)
+    
+    # redo basic
+#     mask_left_edge *=  (mask_left * mask_mag)
+#     mask_right_edge *= (mask_right * mask_mag)
+    
+    # color
+    mask_left_edge *= (mask_yellow_3 )
+    mask_right_edge *= (mask_white_3 )
+    
+    # mask_left_edge *= mask_ground
+    # mask_right_edge *= mask_ground
     # mask_left_edge = mask_left * mask_mag * mask_sobelx_neg * mask_sobely_neg * mask_yellow_3
     # mask_right_edge = mask_right * mask_mag * mask_sobelx_pos * mask_sobely_neg * mask_white_3
      

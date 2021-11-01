@@ -1,0 +1,70 @@
+```
+(duck) kuwajerw@pop-os [11:22:21PM 29/10/2021]:
+() ~/
+$ dts duckiebot keyboard_control falcon
+
+dts :  Problems with a command?
+    :  
+    :      Report here: https://github.com/duckietown/duckietown-shell-commands/issues
+    :  
+    :      Troubleshooting:
+    :  
+    :      - If some commands update fail, delete ~/.dt-shell/commands
+    :  
+    :      - To reset the shell to "factory settings", delete ~/.dt-shell
+    :  
+    :        (Note: you will have to re-configure.)
+INFO:dts:Commands version: daffy-montreal21
+INFO:dts:looking at /home/kuwajerw/.dt-shell/commands-multi/daffy-montreal21
+DEBUG:duckietown_docker_utils:duckietown_docker_utils version 6.0.82 path /home/kuwajerw/.local/lib/python3.8/site-packages
+INFO:dts:Removing container joystick_gui_falcon
+access control disabled, clients can connect from any host
+INFO:dts:Running joystick_gui_falcon on localhost with environment vars: {'VEHICLE_NAME': 'falcon', 'ROS_MASTER': 'falcon', 'DUCKIEBOT_NAME': 'falcon', 'ROS_MASTER_URI': 'http://falcon.local:11311', 'HOSTNAME': 'falcon', 'QT_X11_NO_MITSHM': 1, 'DISPLAY': ':1'}
+Network configured successfully.
+WARNING: robot_type file does not exist. Using 'duckiebot' as default type.
+WARNING: robot_configuration file does not exist.
+WARNING: robot_hardware file does not exist.
+Forcing ROS_MASTER_URI=http://falcon.local:11311
+<== Entrypoint
+... logging to /root/.ros/log/5f30b69e-3930-11ec-b0d8-001325ae6d4d/roslaunch-pop-os-1.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+
+started roslaunch server http://pop-os.local:36759/
+
+SUMMARY
+========
+
+PARAMETERS
+ * /rosdistro: noetic
+ * /rosversion: 1.15.11
+
+NODES
+  /falcon/
+    virtual_joystick (virtual_joystick/virtual_joystick_gui.py)
+
+ROS_MASTER_URI=http://falcon.local:11311
+
+process[falcon/virtual_joystick-1]: started with pid [59]
+
+
+
+
+Virtual Joystick for your Duckiebot
+-----------------------------------
+
+
+[ARROW_KEYS]:    Use them to steer your Duckiebot
+         [q]:    Quit the program
+         [a]:    Start lane-following a.k.a. autopilot
+         [s]:    Stop lane-following
+         [i]:    Toggle anti-instagram
+         [e]:    Toggle emergency stop
+
+
+QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-root'
+libGL error: No matching fbConfigs or visuals found
+libGL error: failed to load driver: swrast
+
+```
