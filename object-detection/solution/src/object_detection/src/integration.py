@@ -58,5 +58,5 @@ def filter_by_bboxes(bbox):
     width = box[2] - box[0]
     height = box[3] - box[1]
     area = width * height
-    return area > 5000
+    return area > 2000
 
